@@ -1,0 +1,33 @@
+name: Salesforce Deploy with JWT
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Salesforce CLI
+        run: npm install -g sfdx-cli
+
+      - name: Authenticate with Salesforce using JWT
+        env:
+          SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
+          SFDX_JWT_KEY: ${{ secrets.SFDX_JWT_KEY }}
+          SFDX_USERNAME: ${{ secrets.SFDX_USERNAME }}
+        run: |
+          echo "$SFDX_JWT_KEY" > server.key
+          sfdx auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername
+
+      - name: Deploy to Salesforce
+        run: sfdx force:source:deploy -p force-app -u ${{ secrets.SFDX_USERNAME }} --wait 10 --verbosets.name }}"
