@@ -31,3 +31,7 @@ jobs:
 
       - name: Deploy to Salesforce
         run: sfdx force:source:deploy -p force-app -u ${{ secrets.SFDX_USERNAME }} --wait 10 --verbosets.name }}"
+_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername
+
+      - name: Deploy to Salesforce
+        run: sfdx force:source:deploy -p force-app -u ${{ secrets.SFDX_USERNAME }} --wait 10 --verbosets.name }}"
