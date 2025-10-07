@@ -1,4 +1,4 @@
-name: Salesforce Deploy with JWT
+name: Salesforce Deploy with Auth URL
 
 on:
   push:
@@ -20,14 +20,12 @@ jobs:
       - name: Install Salesforce CLI
         run: npm install -g sfdx-cli
 
-      - name: Authenticate with Salesforce using JWT
+      - name: Authenticate with Salesforce using SFDX Auth URL
         env:
-          SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
-          SFDX_JWT_KEY: ${{ secrets.SFDX_JWT_KEY }}
-          SFDX_USERNAME: ${{ secrets.SFDX_USERNAME }}
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
         run: |
-          echo "$SFDX_JWT_KEY" > server.key
-          sfdx auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername
+          echo "$SFDX_AUTH_URL" > authurl.txt
+          sfdx auth:sfdxurl:store -f authurl.txt -s -a myPerAlias
 
       - name: Deploy to Salesforce
-        run: sfdx force:source:deploy -p force-app -u ${{ secrets.SFDX_USERNAME }} --wait 10 --verbose
+        run: sfdx force:source:deploy -p force-app -u myPerAlias --wait 10 --verbose
