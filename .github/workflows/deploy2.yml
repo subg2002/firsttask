@@ -29,4 +29,3 @@ jobs:
 
       - name: Deploy to Salesforce
         run: sfdx force:source:deploy -p force-app -u myPerAlias --wait 10 --verbose
-        run: sfdx force:source:deploy -p force-app -u ${{ secrets.SFDX_USERNAME }} --wait 10 --verbose
