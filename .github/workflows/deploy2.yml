@@ -18,7 +18,7 @@ jobs:
           node-version: '18'
 
       - name: Install Salesforce CLI
-        run: npm install -g sfdx-cli
+        run: npm install -g @salesforce/cli
 
       - name: Authenticate with Salesforce using SFDX Auth URL
         env:
@@ -26,7 +26,12 @@ jobs:
           SF_USERNAME: ${{ secrets.SF_USERNAME }}
         run: |
           echo "$SF_AUTH_URL" > authurl.txt
-          sfdx auth:sfdxurl:store -f authurl.txt -s -a subh@deloitte.com
+          sf org login sfdx-url --sfdx-url-file authurl.txt --alias "$SF_USERNAME" --set-default
+          sf org display --target-org "$SF_USERNAME"
+          sf org list
 
       - name: Deploy to Salesforce
-        run: sfdx force:source:deploy -p force-app -u subh@deloitte.com --wait 10 --verbose
+        env: 
+          SF_USERNAME: ${{ secrets.SF_USERNAME }}
+        run: |
+          sf project deploy start --source-dir force-app --target-org "$SF_USERNAME" --wait 10 --verbose
