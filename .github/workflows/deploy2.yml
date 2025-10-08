@@ -12,6 +12,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Show project structure (debug)
+        run: |
+          pwd
+          ls -la
+          cat sfdx-project.json || echo "sfdx-project.json not found"
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
