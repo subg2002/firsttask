@@ -1,0 +1,44 @@
+name: Salesforce Authenticate Org
+
+on:
+  workflow_dispatch:
+
+jobs:
+  auth:
+    runs-on: ubuntu-latest
+    env:
+      SF_AUTH_URL: ${{ secrets.SF_AUTH_URL }}   # The sfdx auth URL (from "sfdx auth:sfdxurl:store --sfdxurl" output)
+      SF_USERNAME: "subh@deloitte.com"   # Org username to verify
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Salesforce CLI
+        run: npm install -g sfdx-cli@latest
+
+      - name: Authenticate to Salesforce using sfdx auth URL
+        env:
+          SFDX_DISABLE_TELEMETRY: 1
+        run: |
+          if [ -z "$SF_AUTH_URL" ]; then
+            echo "SF_AUTH_URL secret is empty"
+            exit 1
+          fi
+          # write the auth url to a file and use sfdx to store it
+          echo "$SF_AUTH_URL" > sfdx_auth_url.txt
+          chmod 600 sfdx_auth_url.txt
+          sfdx auth:sfdxurl:store -f sfdx_auth_url.txt --setdefaultusername
+
+      - name: Verify authenticated org
+        run: |
+          if [ -n "$SF_USERNAME" ]; then
+            sfdx force:org:display --targetusername "$SF_USERNAME"
+          else
+            sfdx force:org:list --verbose
+          fi
