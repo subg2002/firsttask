@@ -40,4 +40,4 @@ jobs:
         env: 
           SF_USERNAME: ${{ secrets.SF_USERNAME }}
         run: |
-          sf project deploy start --source-dir force-app --target-org "$SF_USERNAME" --wait 10 --verbose
+          sf project deploy start --source-dir mySFApp --target-org "$SF_USERNAME" --wait 10 --verbose --ignore-conflicts --force
